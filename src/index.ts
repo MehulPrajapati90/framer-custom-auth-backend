@@ -11,7 +11,8 @@ const port = process.env.PORT;
 
 app.use(cors({
     origin: ['http://localhost:5000', 'https://customauth.framer.website'],
-    credentials: true
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
 }));
 app.use(cookieParser());
 app.use(express.json());

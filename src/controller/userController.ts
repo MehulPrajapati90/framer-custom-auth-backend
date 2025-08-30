@@ -53,8 +53,8 @@ export const register = async (req: any, res: any) => {
 
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
+            secure: process.env.NODE_ENV === "production", // only secure on prod
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             maxAge: 24 * 60 * 60 * 1000,
         });
 
@@ -95,8 +95,8 @@ export const login = async (req: any, res: any) => {
 
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
+            secure: process.env.NODE_ENV === "production", // only secure on prod
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             maxAge: 24 * 60 * 60 * 1000,
         });
 
@@ -118,9 +118,11 @@ export const logout = async (req: any, res: any) => {
         const { token } = req.cookies;
         const payload = jwt.decode(token);
 
-        res.cookie("token", null, { expires: new Date(Date.now()) });
-
-        // res.clearCookie("token");
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        });
 
         res.status(200).json({
             success: true,
@@ -139,7 +141,7 @@ export const updateUser = async (req: any, res: any) => {
     try {
         const { userName } = UpdateSchema.parse(req.body);
 
-        const userId = req.userId; 
+        const userId = req.userId;
         if (!userId) {
             return res.status(401).json({ success: false, message: "Unauthorized" });
         }
@@ -202,10 +204,10 @@ export const deleteUser = async (req: any, res: any) => {
         // @ts-ignore
         const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
-        if(!isPasswordCorrect){
+        if (!isPasswordCorrect) {
             return res.status(403).json({ success: false, message: "Password is incorrect" });
-        }else{
-            const deleteUser = await userModel.deleteOne({_id: userId});
+        } else {
+            const deleteUser = await userModel.deleteOne({ _id: userId });
         }
 
         return res.status(200).json({
