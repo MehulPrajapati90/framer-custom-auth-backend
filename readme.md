@@ -113,10 +113,11 @@ npm run dev
 
 ### 4: Database connection
 
-- production
+```bash
 DATABASE_URL = mongodb://production.database.url/framer-auth
-- development
 DATABASE_URL = mongodb://localhost:27017/framer-auth
+
+```
 
 ### 5: Server port
 ```bash
