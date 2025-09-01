@@ -36,7 +36,10 @@ export const register = async (req: any, res: any) => {
         const userExists = await userModel.findOne({ emailId: emailId });
 
         if (userExists) {
-            throw new Error("User Already Exist, Try Login!");
+            return res.status(403).json({
+                success: false,
+                message: "User Already Exist, Try Login!",
+            })
         }
 
         const user = await userModel.create({
@@ -63,11 +66,11 @@ export const register = async (req: any, res: any) => {
             message: "User Registered Successfully!",
         })
 
-    } catch (e) {
+    } catch (e: any) {
         console.log(e);
         res.status(403).json({
             success: false,
-            message: 'Error:', e
+            message: e.message || "SomeThing went wrong"
         })
     }
 }
@@ -78,13 +81,19 @@ export const login = async (req: any, res: any) => {
         const user = await userModel.findOne({ emailId: emailId });
 
         if (!user) {
-            throw new Error("User Not Exist, Try SignIn!");
+            return res.status(403).json({
+                success: false,
+                message: "User Not Exist, Try SignIn!",
+            })
         }
 
         const checkPassword = await bcrypt.compare(password, user.password);
 
         if (!checkPassword) {
-            throw new Error("InValid Password!");
+            return res.status(403).json({
+                success: false,
+                message: "InValid Password!",
+            })
         }
 
         const token = jwt.sign(
@@ -105,11 +114,11 @@ export const login = async (req: any, res: any) => {
             message: "User Loggined Successfully!",
         })
 
-    } catch (e) {
+    } catch (e: any) {
         console.log(e);
         res.status(403).json({
             success: false,
-            message: 'Error:', e
+            message: e.message || "SomeThing went wrong"
         })
     }
 }
@@ -128,11 +137,11 @@ export const logout = async (req: any, res: any) => {
             success: true,
             message: "User Logged Out Successfully",
         });
-    } catch (e) {
+    } catch (e: any) {
         console.log("Error", e);
         res.status(404).json({
             success: false,
-            message: `Error: ${e}`,
+            message: e.message || "SomeThing went wrong",
         });
     }
 }
@@ -214,11 +223,11 @@ export const deleteUser = async (req: any, res: any) => {
             success: true,
             message: "User Deleted successfully",
         });
-    } catch (e) {
+    } catch (e: any) {
         console.log("Error", e);
         res.status(404).json({
             success: false,
-            message: `Error: ${e}`,
+            message: e.message || "SomeThing went wrong",
         });
     }
 }
@@ -236,11 +245,11 @@ export const getUser = async (req: any, res: any) => {
                 emailId: user.emailId
             }
         })
-    } catch (e) {
+    } catch (e: any) {
         console.log("Error", e);
         res.status(404).json({
             success: false,
-            message: `Error: ${e}`,
+            message: e.message || "SomeThing went wrong",
         });
     }
 }

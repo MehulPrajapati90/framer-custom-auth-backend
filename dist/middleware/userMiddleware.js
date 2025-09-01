@@ -25,7 +25,7 @@ export const userMiddleware = async (req, res, next) => {
         console.log("Error", e);
         res.status(404).json({
             success: false,
-            message: `Error: ${e}, Or Not a Valid User!`,
+            message: e.message || "Something went wrong",
         });
     }
 };

@@ -29,11 +29,11 @@ export const userMiddleware = async(req:any, res: any, next: any)=>{
     req.userId = _id;
 
     next();
-  } catch (e) {
+  } catch (e: any) {
     console.log("Error", e);
     res.status(404).json({
       success: false,
-      message: `Error: ${e}, Or Not a Valid User!`,
+      message: e.message || "Something went wrong",
     });
   }
 }
