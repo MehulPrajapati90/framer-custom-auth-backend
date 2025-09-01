@@ -12,13 +12,12 @@ export const userMiddleware = async(req:any, res: any, next: any)=>{
     const payload = jwt.verify(token, process.env.JWT_KEY || '');
 
     // @ts-ignore
-    const {_id} = payload;
+    const {_id, role} = payload;
 
     if(!_id){
         throw new Error("invalid Token!");
     }
 
-    // @ts-ignore
     const user = await userModel.findById(_id);
 
     if(!user){
@@ -27,6 +26,7 @@ export const userMiddleware = async(req:any, res: any, next: any)=>{
 
     req.user = user;
     req.userId = _id;
+    req.userRole = role;
 
     next();
   } catch (e: any) {

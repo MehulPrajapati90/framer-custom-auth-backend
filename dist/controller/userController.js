@@ -35,9 +35,10 @@ export const register = async (req, res) => {
         const user = await userModel.create({
             userName: userName,
             emailId: emailId,
-            password: hashedPassword
+            password: hashedPassword,
+            role: "user"
         });
-        const token = jwt.sign({ _id: user._id, emailId: user.emailId }, process.env.JWT_KEY || '', { expiresIn: "24h" });
+        const token = jwt.sign({ _id: user._id, emailId: user.emailId, role: user.role }, process.env.JWT_KEY || '', { expiresIn: "24h" });
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production", // only secure on prod
@@ -74,7 +75,7 @@ export const login = async (req, res) => {
                 message: "InValid Password!",
             });
         }
-        const token = jwt.sign({ _id: user._id, emailId: emailId }, process.env.JWT_KEY || '', { expiresIn: "24h" });
+        const token = jwt.sign({ _id: user._id, emailId: emailId, role: user.role }, process.env.JWT_KEY || '', { expiresIn: "24h" });
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production", // only secure on prod

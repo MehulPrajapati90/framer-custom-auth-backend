@@ -45,11 +45,12 @@ export const register = async (req: any, res: any) => {
         const user = await userModel.create({
             userName: userName,
             emailId: emailId,
-            password: hashedPassword
+            password: hashedPassword,
+            role: "user" 
         })
 
         const token = jwt.sign(
-            { _id: user._id, emailId: user.emailId },
+            { _id: user._id, emailId: user.emailId, role: user.role },
             process.env.JWT_KEY || '',
             { expiresIn: "24h" }
         );
@@ -97,7 +98,7 @@ export const login = async (req: any, res: any) => {
         }
 
         const token = jwt.sign(
-            { _id: user._id, emailId: emailId },
+            { _id: user._id, emailId: emailId, role: user.role },
             process.env.JWT_KEY || '',
             { expiresIn: "24h" }
         );

@@ -8,17 +8,17 @@ export const userMiddleware = async (req, res, next) => {
         }
         const payload = jwt.verify(token, process.env.JWT_KEY || '');
         // @ts-ignore
-        const { _id } = payload;
+        const { _id, role } = payload;
         if (!_id) {
             throw new Error("invalid Token!");
         }
-        // @ts-ignore
         const user = await userModel.findById(_id);
         if (!user) {
             throw new Error("User Does not Exist!");
         }
         req.user = user;
         req.userId = _id;
+        req.userRole = role;
         next();
     }
     catch (e) {
